@@ -118,28 +118,42 @@ that retains the final answer at each stage until we reach the stop conditions.|
 
 
 
-#| Question 2.c
+#| Question 2.c|#
 (: list-length-REC : (Listof Any) -> Natural)
 (define(list-length-REC lst)
   (if(null? lst)
    0
    (+ 1 (list-length-REC(rest lst)))))
    
+(define (list-of-lists? v)
+  (and (list? v) (andmap list? v)))
 
-(: count-3listsRec  : (Listof Any) -> Natural)
+(: count-3listsRec  : (Listof(Listof Any)) -> Natural)
 (define (count-3listsRec myLST)
   (if(null? myLST) ;; stop condition
      0
-     (if (= (list-length-REC (first myLST)) 3);; if the first list contain exactly 3 elements 
+     #|(if(and(list? (first myLST));; if the first list contain exactly 3 elements 
+            (= (list-length-REC (first myLST)) 3)) ;;and its one internal list
          (+ 1 (count-3listsRec (rest myLST))) ;;count++
-         (if(pair? (rest first myLST))
-            (count-3listsRec(rest first myLST));;else-the first list doesn't contain exactly 3 elements
-            (count-3listsRec(rest myLST))))))
+         (count-3listsRec (rest myLST));; else |#
 
-|#
-            
+         
+     (if(list-of-lists? (first myLST))
+            (and(count-3listsRec(first first myLST))
+            (count-3listsRec(first rest myLST))
+            (count-3listsRec(rest myLST)))
+
+            (if(= (list-length-REC (first myLST)) 3)
+               (+ 1 (count-3listsRec (rest myLST))) ;;count++
+               (count-3listsRec (rest myLST))))))
+     
            
+            
+     
+   
 
+
+(test (count-3listsRec '((1 3 4) (() (1 2 3)) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 4)
 
 
 
