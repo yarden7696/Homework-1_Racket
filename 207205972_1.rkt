@@ -32,13 +32,13 @@ Each string created was inserted into the list of strings I created.
 |#
 
 
-
+#|-------------------------------------------------------------------------------------|#
 
 
 #| Question 2.a
 This function gets a list that has internal lists with members of different types.
 The goal is to check how many internal lists contain exactly 3 elements.
-I used helper function that gets a list and counts the number of members in it.|#
+I used helper function that gets a list and counts the number of members in it.
 
 (: list-length : (Listof Any) -> Natural)
 (define(list-length lst)
@@ -46,12 +46,13 @@ I used helper function that gets a list and counts the number of members in it.|
    0
    (+ 1 (list-length(rest lst)))))
    
+
 (: count-3lists : (Listof (Listof Any)) -> Natural)
 (define (count-3lists myList)
   (if(null? myList) ;; stop condition
      0
-     (if (= (list-length(first myList)) 3) 
-         (+ 1 (count-3lists (rest myList)));; if the first list contain exactly 3 elements 
+     (if (= (list-length(first myList)) 3);; if the first list contain exactly 3 elements 
+         (+ 1 (count-3lists (rest myList))) ;;count++
          (count-3lists (rest myList)))));;else-the first list doesn't contain exactly 3 elements
 
 
@@ -69,15 +70,59 @@ I used helper function that gets a list and counts the number of members in it.|
 
 ;;(test (count-3lists '((2 "t" 4) 7 8 9)) => 1) this test is not pass
  
-       
+|#       
+
+
+
+#| Question 2.b
+As in 2.a, i used the 'list-length-tail' helper function that counts the
+number of internal elements in a given list.
+The difference between the two sections is that now the function is a tail recursion
+that retains the final answer at each stage until we reach the stop conditions.|#
+
+#|An helper function that counts the number of elements in a given list|#
+(: list-length-tail : (Listof Any) -> Natural)
+(define(list-length-tail lst)
+  (if(null? lst) ;; stop condition
+   0
+   (+ 1 (list-length-tail(rest lst))))) ;;else- the list is not empty
+
+#|An helper function that saves the result in every stage|#
+(: helper-tail : (Listof (Listof Any)) Natural -> Natural)
+(define(helper-tail lst acc)
+  (if(null? lst);; stop condition
+   acc
+   (if (= (list-length-tail(first lst)) 3);; if the first list contain exactly 3 elements 
+       (helper-tail(rest lst) (+ 1 acc));; count++
+       (helper-tail (rest lst) acc))));;else-the first list doesn't contain exactly 3 elements
+   
+#|Source function|#
+(: count-3lists-tail : (Listof (Listof Any)) -> Natural)
+(define (count-3lists-tail List_tail)
+  (helper-tail List_tail 0)) ;;It's 0 caz I calculate sum and i want it start from 0
+ 
   
+(test (count-3lists-tail '((9 3 5) (() (1 2 3)) ("tt" 4 #\E) (2 4 6 8) (1 2 3))) => 3)
+(test (count-3lists-tail '((1 5 4) (() (1 2 3) (6)) ("tt" "mom" #\@) (2 4 6 8) (1 2 3))) => 4)
+(test (count-3lists-tail '((2 "t" 4) (() () ()) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 4)
+(test (count-3lists-tail '((2 "t" 4) ((1) (7 8 9) (6 2)))) => 2)
+(test (count-3lists-tail '((2 "t" 4) ((1) (7 8 9) (6 2)))) => 2)
+(test (count-3lists-tail '((1 2 4) ((3 5) () (6)))) => 2) 
+(test (count-3lists-tail '((1 2 4) ((3 5) () 7))) => 2)
+
+;;this 2 test in the second list there is 2 ((...))check if its shoult return 1 or 2?
+;;(test (count-3lists-tail '((() () ()) (("tt" "Three" 7)))) => 1)this test pass with res 1
+;;(test (count-3lists-tail '((() () ()) (("tt" "Three" 7)))) => 2)this test not pass with res 2
+
+;;(test (count-3lists-tail '((2 "t" 4) 7 8 9)) => 1) this test is not pass  
 
 
 
 
+#| Question 2.c|#
 
 
-
+#|-------------------------------------------------------------------------------------|#
 
 
 
