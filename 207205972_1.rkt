@@ -63,15 +63,14 @@ I used helper function that gets a list and counts the number of members in it.
 (test (count-3lists '((2 "t" 4) ((1) (7 8 9) (6 2)))) => 2)
 (test (count-3lists '((1 2 4) ((3 5) () (6)))) => 2) 
 (test (count-3lists '((1 2 4) ((3 5) () 7))) => 2)
+(test (count-3lists '((() (1 2 3) (6)) ("tt" "mom" #\@) (2 4 6 8) (1 2 3))) => 3)
 
 ;;this 2 test in the second list there is 2 ((...))check if its shoult return 1 or 2?
 ;;(test (count-3lists '((() () ()) (("tt" "Three" 7)))) => 1)this test pass with res 1
 ;;(test (count-3lists '((() () ()) (("tt" "Three" 7)))) => 2)this test not pass with res 2
 
-;;(test (count-3lists '((2 "t" 4) 7 8 9)) => 1) this test is not pass
- 
-|#       
-
+;;(test (count-3lists '((2 "t" 4) 7 8 9)) => 1) this test is not pass      
+|# 
 
 
 #| Question 2.b
@@ -80,7 +79,7 @@ number of internal elements in a given list.
 The difference between the two sections is that now the function is a tail recursion
 that retains the final answer at each stage until we reach the stop conditions.|#
 
-#|An helper function that counts the number of elements in a given list|#
+#|An helper function that counts the number of elements in a given list
 (: list-length-tail : (Listof Any) -> Natural)
 (define(list-length-tail lst)
   (if(null? lst) ;; stop condition
@@ -115,11 +114,33 @@ that retains the final answer at each stage until we reach the stop conditions.|
 ;;(test (count-3lists-tail '((() () ()) (("tt" "Three" 7)))) => 2)this test not pass with res 2
 
 ;;(test (count-3lists-tail '((2 "t" 4) 7 8 9)) => 1) this test is not pass  
+|#
 
 
 
+#| Question 2.c
+(: list-length-REC : (Listof Any) -> Natural)
+(define(list-length-REC lst)
+  (if(null? lst)
+   0
+   (+ 1 (list-length-REC(rest lst)))))
+   
 
-#| Question 2.c|#
+(: count-3listsRec  : (Listof Any) -> Natural)
+(define (count-3listsRec myLST)
+  (if(null? myLST) ;; stop condition
+     0
+     (if (= (list-length-REC (first myLST)) 3);; if the first list contain exactly 3 elements 
+         (+ 1 (count-3listsRec (rest myLST))) ;;count++
+         (if(pair? (rest first myLST))
+            (count-3listsRec(rest first myLST));;else-the first list doesn't contain exactly 3 elements
+            (count-3listsRec(rest myLST))))))
+
+|#
+            
+           
+
+
 
 
 #|-------------------------------------------------------------------------------------|#
