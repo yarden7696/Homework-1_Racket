@@ -19,7 +19,7 @@ This function receives 3 characters as input.
 The goal is to create all the permutations with the 3 characters
 (when all three are always used).
 To do this I used the word string which creates a string of characters.
-Each string created was inserted into the list of strings I created.
+Each string created was inserted into the list of strings I created.|#
 (: permute3 : Char Char Char -> (Listof String))
 (define (permute3 a b c)
   (list(string a b c) (string a c b) (string b a c)
@@ -29,7 +29,7 @@ Each string created was inserted into the list of strings I created.
 (test (permute3 #\# #\% #\&) =>'("#%&" "#&%" "%#&" "%&#" "&#%" "&%#"))
 (test (permute3 #\4 #\5 #\6) =>'("456" "465" "546" "564" "645" "654"))
 (test (permute3 #\z #\3 #\@) =>'("z3@" "z@3" "3z@" "3@z" "@z3" "@3z"))
-|#
+
 
 
 
@@ -38,47 +38,12 @@ Each string created was inserted into the list of strings I created.
 #| Question 2.a
 |#
 
-(: list-length : (Listof Any) -> Natural)
-(define(list-length lst)
-  (if(null? lst)
-   0
-   (+ 1 (list-length(rest lst)))))
-   
-
-(: count-3lists : (Listof (Listof Any)) -> Natural)
-(define (count-3lists myList)
-  (if(null? myList) ;; stop condition
-     0
-     (if (= (list-length(first myList)) 3) 
-         (+ 1 (count-3lists (rest myList)));; if the first list contain exactly 3 elements 
-         (count-3lists (rest myList)))));;else-the first list doesn't contain exactly 3 elements
 
 
-(test (count-3lists '((9 3 5) (() (1 2 3)) ("tt" 4 #\E) (2 4 6 8) (1 2 3))) => 3)
-(test (count-3lists '((1 5 4) (() (1 2 3) (6)) ("tt" "mom" #\@) (2 4 6 8) (1 2 3))) => 4)
-(test (count-3lists '((2 "t" 4) (() () ()) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 4)
-(test (count-3lists '((2 "t" 4) ((1) (7 8 9) (6 2)))) => 2)
-(test (count-3lists '((2 "t" 4) ((1) (7 8 9) (6 2)))) => 2)
-(test (count-3lists '((1 2 4) ((3 5) () (6)))) => 2) 
-(test (count-3lists '((1 2 4) ((3 5) () 7))) => 2)
 
-;;this 2 test in the second list there is 2 ((...))check if its shoult return 1 or 2?
-;;(test (count-3lists '((() () ()) (("tt" "Three" 7)))) => 1)this test pass with res 1
-;;(test (count-3lists '((() () ()) (("tt" "Three" 7)))) => 2)this test not pass with res 2
 
-;;(test (count-3lists '((2 "t" 4) 7 8 9)) => 1) this test is not pass
- 
-       
+
+
+
+
   
-
-
-
-
-
-
-
-
-
-
-
-
