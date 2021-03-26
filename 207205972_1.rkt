@@ -35,6 +35,11 @@ Each string created was inserted into the list of strings I created.|#
 
 
 
+#| Question 2.a
+|#
+
+
+
 
 
 
