@@ -1,5 +1,7 @@
 #lang pl
 
+#|------------------------------------Q1---------------------------------------------|#
+
 #| Question 1.1
 This function receives 5 characters as input and converts them into one string.
 To do this I used the word string which turns a finite set of characters into a string.
@@ -24,7 +26,6 @@ Each string created was inserted into the list of strings I created.
 (define (permute3 a b c)
   (list(string a b c) (string a c b) (string b a c)
                       (string b c a) (string c a b) (string c b a)))
-
 (test (permute3 #\a #\b #\c) =>'("abc" "acb" "bac" "bca" "cab" "cba"))
 (test (permute3 #\# #\% #\&) =>'("#%&" "#&%" "%#&" "%&#" "&#%" "&%#"))
 (test (permute3 #\4 #\5 #\6) =>'("456" "465" "546" "564" "645" "654"))
@@ -32,21 +33,19 @@ Each string created was inserted into the list of strings I created.
 |#
 
 
-#|-------------------------------------------------------------------------------------|#
+#|------------------------------------Q2---------------------------------------------|#
 
 
 #| Question 2.a
 This function gets a list that has internal lists with members of different types.
 The goal is to check how many internal lists contain exactly 3 elements.
 I used helper function that gets a list and counts the number of members in it.
-
 (: list-length : (Listof Any) -> Natural)
 (define(list-length lst)
   (if(null? lst)
    0
    (+ 1 (list-length(rest lst)))))
    
-
 (: count-3lists : (Listof (Listof Any)) -> Natural)
 (define (count-3lists myList)
   (if(null? myList) ;; stop condition
@@ -54,8 +53,6 @@ I used helper function that gets a list and counts the number of members in it.
      (if (= (list-length(first myList)) 3);; if the first list contain exactly 3 elements 
          (+ 1 (count-3lists (rest myList))) ;;count++
          (count-3lists (rest myList)))));;else-the first list doesn't contain exactly 3 elements
-
-
 (test (count-3lists '((9 3 5) (() (1 2 3)) ("tt" 4 #\E) (2 4 6 8) (1 2 3))) => 3)
 (test (count-3lists '((1 5 4) (() (1 2 3) (6)) ("tt" "mom" #\@) (2 4 6 8) (1 2 3))) => 4)
 (test (count-3lists '((2 "t" 4) (() () ()) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 4)
@@ -64,11 +61,9 @@ I used helper function that gets a list and counts the number of members in it.
 (test (count-3lists '((1 2 4) ((3 5) () (6)))) => 2) 
 (test (count-3lists '((1 2 4) ((3 5) () 7))) => 2)
 (test (count-3lists '((() (1 2 3) (6)) ("tt" "mom" #\@) (2 4 6 8) (1 2 3))) => 3)
-
 ;;this 2 test in the second list there is 2 ((...))check if its shoult return 1 or 2?
 ;;(test (count-3lists '((() () ()) (("tt" "Three" 7)))) => 1)this test pass with res 1
 ;;(test (count-3lists '((() () ()) (("tt" "Three" 7)))) => 2)this test not pass with res 2
-
 ;;(test (count-3lists '((2 "t" 4) 7 8 9)) => 1) this test is not pass      
 |# 
 
@@ -85,7 +80,6 @@ that retains the final answer at each stage until we reach the stop conditions.|
   (if(null? lst) ;; stop condition
    0
    (+ 1 (list-length-tail(rest lst))))) ;;else- the list is not empty
-
 #|An helper function that saves the result in every stage|#
 (: helper-tail : (Listof (Listof Any)) Natural -> Natural)
 (define(helper-tail lst acc)
@@ -108,17 +102,15 @@ that retains the final answer at each stage until we reach the stop conditions.|
 (test (count-3lists-tail '((2 "t" 4) ((1) (7 8 9) (6 2)))) => 2)
 (test (count-3lists-tail '((1 2 4) ((3 5) () (6)))) => 2) 
 (test (count-3lists-tail '((1 2 4) ((3 5) () 7))) => 2)
-
 ;;this 2 test in the second list there is 2 ((...))check if its shoult return 1 or 2?
 ;;(test (count-3lists-tail '((() () ()) (("tt" "Three" 7)))) => 1)this test pass with res 1
 ;;(test (count-3lists-tail '((() () ()) (("tt" "Three" 7)))) => 2)this test not pass with res 2
-
 ;;(test (count-3lists-tail '((2 "t" 4) 7 8 9)) => 1) this test is not pass  
 |#
 
 
 
-#| Question 2.c|#
+#| Question 2.c
 (: list-length-REC : (Listof Any) -> Natural)
 (define(list-length-REC lst)
   (if(null? lst)
@@ -148,18 +140,40 @@ that retains the final answer at each stage until we reach the stop conditions.|
                (count-3listsRec (rest myLST))))))
      
            
-            
      
-   
-
-
 (test (count-3listsRec '((1 3 4) (() (1 2 3)) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 4)
+|#
+
+#|-------------------------------------Q3---------------------------------------------|#
 
 
+#| Question 3.1 && 3.2
+In both of these sections I created a new type called KeyStack.
+It has 2 constructors:
+EmptyKS- A constructor that represents an empty stack.
+Push- accepts 3 things as input (symbol, string and KeyStack)
+and returns an extended keystack in the natural
+|#
+(define-type KeyStack
+  [EmptyKS] ;; 3.1
+  [Push Symbol String KeyStack]) ;;3.2
 
-#|-------------------------------------------------------------------------------------|#
 
-
-
-
-
+#| Question 3.3
+This function accepts as input Symbol and a KeyStack and return the first
+value that is keyed accordingly.
+If the key does not appear in the original stack, it should return a #f value.
+To do this I checked if the stack I received was of type EmptyKS or Push.
+If it is a Push type,then I checked whether the keys are the same, if yes-
+i return the string linked to it, otherwise i will recursively call the search-stack
+function until we find the key.if the key wat not found - i will return #f. |#
+(: search-stack  : (Symbol KeyStack -> (U String False)) )
+(define (search-stack smbl stck)
+  (cases stck
+    [(EmptyKS) #f]
+    [(Push smb str mySTCK )
+     (if(eq? smb smbl)
+        str
+        (search-stack smbl mySTCK))]))
+;; check this function with more test, i have not time to check this.
+;;(test (search-stack 'a (Push 'a "AAA" (Push 'b "B" (Push 'a "A" (EmptyKS))))) => "AAA")
