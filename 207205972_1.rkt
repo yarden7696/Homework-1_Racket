@@ -204,3 +204,94 @@ Otherwise - this means the stack is empty so we will return #F value. |#
                                                  (Push 'b "B" (Push 'b "B" (EmptyKS))))
 
 
+#|------------------------------------Q4---------------------------------------------|#
+
+
+(: is-odd? : Natural -> Boolean)
+#|
+input: x that is a Natural Number.
+output: true if x is odd Natural Number, otherwise- false.
+This method checks whether the number we got is odd or not.
+To check that, 'is-odd?' function works recursively as follows:
+-If x is equal to '0' then x is even number so the need to return false (stop condition).
+-If we got an odd number,we called the is-even?(X-1) function, Which will call is-odd(x-1)
+and so on and so forth until it enters the 'is-even?' function for the last time that it returns
+true for the odd number we got.
+-If we got an even number,we called the is-even?(X-1) function, Which will call is-odd(x-1)
+and so on and so forth until it enters the 'is-odd?' function for the last time that it returns
+false for the even number we got.       
+|#
+
+(define (is-odd? x)
+ (if (zero? x)
+ false
+ (is-even? (- x 1))))
+
+(: is-even? : Natural -> Boolean)
+#|
+input: x that is a Natural Number.
+output: true if x is even Natural Number, otherwise- false.
+This method checks whether the number we got is even or not.
+To check that, 'is-even?' function works recursively as follows:
+-If x is equal to '0' then x is even number so the need to return true (stop condition).
+-If we got an odd number,we called the is-odd?(X-1) function, Which will call is-even(x-1)
+and so on and so forth until it enters the 'is-odd?' function for the last time that it returns
+false for the odd number we got.
+-If we got an even number,we called the is-odd?(X-1) function, Which will call is-even(x-1)
+and so on and so forth until it enters the 'is-even?' function for the last time that it returns
+true for the even number we got.       
+|#
+(define (is-even? x)
+ (if (zero? x)
+ true
+ (is-odd? (- x 1))))
+
+;; tests --- is-odd?/is-even?
+(test (not (is-odd? 12)))
+(test (is-even? 12))
+(test (not (is-odd? 0)))
+(test (is-even? 0))
+(test (is-odd? 1))
+(test (not (is-even? 1)))
+
+
+(: every? : (All (A) (A -> Boolean) (Listof A) -> Boolean))
+;; See explanation about the All syntax at the end of the file…
+;; << Add your comments here>>
+;; << Add your comments here>>
+(define (every? pred lst)
+ (or (null? lst)
+ (and (pred (first lst))
+ (every? pred (rest lst)))))
+;; An example for the usefulness of this polymorphic function
+(: all-even? : (Listof Natural) -> Boolean)
+;; << Add your comments here>>
+;; << Add your comments here>>
+(define (all-even? lst)
+ (every? is-even? lst))
+;; tests
+(test (all-even? null))
+(test (all-even? (list 0)))
+(test (all-even? (list 2 4 6 8)))
+(test (not (all-even? (list 1 3 5 7))))
+(test (not (all-even? (list 1))))
+(test (not (all-even? (list 2 4 1 6))))
+(: every2? : (All (A B) (A -> Boolean) (B -> Boolean) (Listof A) (Listof B) ->
+Boolean))
+;; << Add your comments here>>
+;; << Add your comments here>>
+(define (every2? pred1 pred2 lst1 lst2)
+ (or (null? lst1) ;; both lists assumed to be of same length
+ (and (pred1 (first lst1))
+ (pred2 (first lst2))
+ (every2? pred1 pred2 (rest lst1) (rest lst2)))))
+
+
+
+
+
+
+
+
+
+
