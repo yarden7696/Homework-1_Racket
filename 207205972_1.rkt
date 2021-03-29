@@ -119,7 +119,6 @@ that retains the final answer at each stage until we reach the stop conditions.|
    
 (define (list-of-lists? v)
   (and (list? v) (andmap list? v)))
-
 (: count-3listsRec  : (Listof(Listof Any)) -> Natural)
 (define (count-3listsRec myLST)
   (if(null? myLST) ;; stop condition
@@ -128,13 +127,11 @@ that retains the final answer at each stage until we reach the stop conditions.|
             (= (list-length-REC (first myLST)) 3)) ;;and its one internal list
          (+ 1 (count-3listsRec (rest myLST))) ;;count++
          (count-3listsRec (rest myLST));; else |#
-
          
      (if(list-of-lists? (first myLST))
             (and(count-3listsRec(first first myLST))
             (count-3listsRec(first rest myLST))
             (count-3listsRec(rest myLST)))
-
             (if(= (list-length-REC (first myLST)) 3)
                (+ 1 (count-3listsRec (rest myLST))) ;;count++
                (count-3listsRec (rest myLST))))))
@@ -170,10 +167,40 @@ function until we find the key.if the key wat not found - i will return #f. |#
 (: search-stack  : (Symbol KeyStack -> (U String False)) )
 (define (search-stack smbl stck)
   (cases stck
-    [(EmptyKS) #f]
-    [(Push smb str mySTCK )
+    [(EmptyKS) #f] ;; if the stack is empy- return false 
+    [(Push smb str mySTCK ) ;; the stak is not empty-
      (if(eq? smb smbl)
         str
         (search-stack smbl mySTCK))]))
-;; check this function with more test, i have not time to check this.
-;;(test (search-stack 'a (Push 'a "AAA" (Push 'b "B" (Push 'a "A" (EmptyKS))))) => "AAA")
+
+(test (search-stack 'a (Push 'a "AAA" (Push 'b "B" (Push 'a "A" (EmptyKS))))) => "AAA")
+(test (search-stack 'c (Push 'a "AAA" (Push 'b "B" (Push 'a "A" (EmptyKS))))) => #f)
+(test (search-stack 'c (Push 'd "AAA" (Push 'b "B" (Push 'c "A" (EmptyKS))))) => "A")
+(test (search-stack 'e (Push 'e "100" (Push 'e "B" (Push 'e "A" (EmptyKS))))) => "100")
+(test (search-stack 'y (Push 'a "jin" (Push 'y "hector" (Push 'a "A" (EmptyKS))))) => "hector")
+
+
+
+#| Question 3.4
+This function accepts as input a KeyStack and return the keyed-stack without
+its first value.
+If the original stack was empty, it should return a #f value.
+To do this I  |#
+
+(: pop-stack  : (KeyStack -> (U KeyStack False)))
+(define (pop-stack stck)
+  (cases stck
+     [(EmptyKS) #f] ;; if the stack is empy- return false 
+    [(Push smb str rest_mySTCK )rest_mySTCK])) ;; else-the stack is not empty
+
+
+
+(test (pop-stack (EmptyKS)) => #f) 
+(test (pop-stack (Push 'a "AAA" (Push 'b "B" (Push 'a "A" (EmptyKS))))) =>
+                                                 (Push 'b "B" (Push 'a "A" (EmptyKS))))
+(test (pop-stack (Push 'd "racket" (Push 'c "f" (Push 'c "F" (EmptyKS))))) =>
+                                                 (Push 'c "f" (Push 'c "F" (EmptyKS))))
+(test (pop-stack (Push 'S "SDF" (Push 'b "B" (Push 'b "B" (EmptyKS))))) =>
+                                                 (Push 'b "B" (Push 'b "B" (EmptyKS))))
+
+
