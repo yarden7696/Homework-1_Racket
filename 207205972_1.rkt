@@ -161,7 +161,7 @@ This function accepts as input Symbol and a KeyStack and return the first
 value that is keyed accordingly.
 If the key does not appear in the original stack, it should return a #f value.
 To do this I checked if the stack I received was of type EmptyKS or Push.
-If it is a Push type,then I checked whether the keys are the same, if yes-
+If it is a Push type,I checked whether the keys are the same, if yes-
 i return the string linked to it, otherwise i will recursively call the search-stack
 function until we find the key.if the key wat not found - i will return #f. |#
 (: search-stack  : (Symbol KeyStack -> (U String False)) )
@@ -185,15 +185,15 @@ function until we find the key.if the key wat not found - i will return #f. |#
 This function accepts as input a KeyStack and return the keyed-stack without
 its first value.
 If the original stack was empty, it should return a #f value.
-To do this I  |#
+To do this I checked if the stack I received was of type EmptyKS or Push.
+If it is a Push type,I return the rest of the stack (without the first value).
+Otherwise - this means the stack is empty so we will return #F value. |#
 
 (: pop-stack  : (KeyStack -> (U KeyStack False)))
 (define (pop-stack stck)
   (cases stck
      [(EmptyKS) #f] ;; if the stack is empy- return false 
     [(Push smb str rest_mySTCK )rest_mySTCK])) ;; else-the stack is not empty
-
-
 
 (test (pop-stack (EmptyKS)) => #f) 
 (test (pop-stack (Push 'a "AAA" (Push 'b "B" (Push 'a "A" (EmptyKS))))) =>
