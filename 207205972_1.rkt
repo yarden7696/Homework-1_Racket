@@ -125,45 +125,55 @@ As I said in 2.a, watching practice 2 again helped me a lot to solve the questio
 
 
 
-#| Question 2.c |#
+#| Question 2.c|#
 
 
+#|An helper function that counts the number of elements in a given list|#
 (: list-length-c : (Listof Any) -> Natural)
 (define(list-length-c lst)
-  (if(null? lst)
+  (if(null? lst) ;;stop condition
    0
-   (+ 1 (list-length-c(rest lst)))))
+   (+ 1 (list-length-c(rest lst))))) ;; the recursive step
    
 
-
+#|
+This function receives as input a list of elements of different types and natural number
+(accumulate) whose his role is to keep the number of inner lists in length 3 in the
+source list. |#
 (: help-2c : (Listof Any) Natural -> Natural)
 (define (help-2c LST acc)
   (if(null? LST)
      acc ;;stop condition
-     (if(list? (first LST)) ;;if the first value is a list - check this value recursive
-        (if(= (list-length-c (first LST)) 3)
-           (help-2c (rest LST) (+ 1 acc));;we found a list that contain exacly 3 elements -> counter++
-           (help-2c (rest LST) acc)) 
+     (if(list? (first LST));; the first element is a list 
+        (if(= (list-length-c (first LST)) 3) ;; it has exactly 3 elements so in the next line-count++
+           (help-2c (rest LST) (+ 1 acc));; checking the rest of the list
+           (help-2c (rest LST) acc));; else-there is no exactly 3 elements 
      (help-2c(rest LST) acc))))
 
  
 
-#|
-|# 
+#| Source function
+This function gets a list that has internal lists with elements of different types.
+The goal is to counts the number of lists of length 3.
+To solve the question,i used the 'help-2c' helper function which i detailed above.
+This question was difficult for me, it took me an average of 3-4 hours and I was helped by
+friends. the difficulty was mainly the access to the element of the list of list. |# 
 (: count-3listsRec : (Listof (Listof Any)) -> Natural)
 (define (count-3listsRec myLST)
-  (if (null? myLST)
+  (if (null? myLST) ;; stop condition
       0
-      (if(= (list-length-c (first myLST)) 3)
-         (+ (help-2c (first myLST) 1) (count-3listsRec (rest myLST))) 
-         (+ (help-2c (first myLST) 0) (count-3listsRec (rest myLST))))))
+      (if(= (list-length-c (first myLST)) 3) ;; the first element is a list with 3 elements init.  
+         (+ (help-2c (first myLST) 1) (count-3listsRec (rest myLST)));;help-2c counts the internal list with length 3  
+         (+ (help-2c (first myLST) 0) (count-3listsRec (rest myLST))))));; the first element is a list without 3 elements init. 
      
 (test (count-3listsRec '((1 3 4) (() (1 2 3) ()) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 5)
- 
+(test (count-3listsRec '((1 3 4) (() (1 2 3)) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 4) 
+(test (count-3listsRec '((1 3 4) (() (1 2 3) () (1 4 8)) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 5)
+(test (count-3listsRec '((1 3 4) ((5 6 8) (1 2 3) ( 2 4 6)) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 7)
 
 #|-------------------------------------Q3---------------------------------------------|#
 
-
+ 
 #| Question 3.1 && 3.2
 In both of these sections I created a new type called KeyStack.
 It has 2 constructors:
