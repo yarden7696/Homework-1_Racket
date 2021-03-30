@@ -112,13 +112,33 @@ that retains the final answer at each stage until we reach the stop conditions.|
 
 #| Question 2.c |#
 
-        
-        
-            
+
+(: list-length-c : (Listof Any) -> Natural)
+(define(list-length-c lst)
+  (if(null? lst)
+   0
+   (+ 1 (list-length-c(rest lst)))))
+   
+
+(: help : Natural (Listof Any) -> Natural)
+(define (help counter ls)
+  (cond[(null? ls) counter] ;;stop condition
+       [(list? (car ls)) ;;if the first value is a list - check this value recursive
+        (if(= (list-length-c (car ls)) 3)
+            (help (+ 1 counter)(cdr ls));;we found a list that contain exacly 3 elements -> counter++
+            (help counter (cdr ls)))] 
+       [else (help counter (cdr ls))]))
+#|
+
+|#
+(: count-3listsRec : (Listof (Listof Any)) -> Natural)
+(define (count-3listsRec myLST)
+  (match myLST
+    [(null) (0)]
+        [(= (list-length-c (first myLST)) 3) (+ (help 1 (first myLST)) (count-3listsRec (rest myLST)))] 
+        [else  (+ (help 0 (first myLST)) (count-3listsRec (rest myLST)))]))
      
-           
-     
-(test (count-3listsRec '((1 3 4) (() (1 2 3)) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 4)
+(test (count-3listsRec '((1 3 4) (() (1 2 3) ()) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 5)
 
 
 #|-------------------------------------Q3---------------------------------------------|#
