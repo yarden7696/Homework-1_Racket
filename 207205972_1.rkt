@@ -5,6 +5,8 @@
 #| Question 1.1
 This function receives 5 characters as input and converts them into one string.
 To do this I used the word string which turns a finite set of characters into a string.
+I solved this question quickly, it took me 5 minutes to solve this question.
+I barely faced any difficulties. |#
 (: append5 : Char Char Char Char Char -> String)
 (define (append5 a b c d e)
   (string a b c d e))
@@ -13,7 +15,7 @@ To do this I used the word string which turns a finite set of characters into a 
 (test (append5 #\e #\d #\  #\b #\a) => "ed ba")
 (test (append5 #\  #\  #\  #\  #\ ) => "     ")
 (test (append5 #\A #\R #\# #\^ #\() => "AR#^(")
-|#
+
 
 
 #| Question 1.2
@@ -22,29 +24,36 @@ The goal is to create all the permutations with the 3 characters
 (when all three are always used).
 To do this I used the word string which creates a string of characters.
 Each string created was inserted into the list of strings I created.
+I spent about 10 minutes solving the question because this solution uses a similar
+idea in the 1.1 solution, the difference between them is that here I used all the
+permutations. I barely faced any difficulties. |#
 (: permute3 : Char Char Char -> (Listof String))
 (define (permute3 a b c)
   (list(string a b c) (string a c b) (string b a c)
                       (string b c a) (string c a b) (string c b a)))
+
 (test (permute3 #\a #\b #\c) =>'("abc" "acb" "bac" "bca" "cab" "cba"))
 (test (permute3 #\# #\% #\&) =>'("#%&" "#&%" "%#&" "%&#" "&#%" "&%#"))
 (test (permute3 #\4 #\5 #\6) =>'("456" "465" "546" "564" "645" "654"))
 (test (permute3 #\z #\3 #\@) =>'("z3@" "z@3" "3z@" "3@z" "@z3" "@3z"))
-|#
+
 
 
 #|------------------------------------Q2---------------------------------------------|#
 
 
 #| Question 2.a
-This function gets a list that has internal lists with members of different types.
+This function gets a list that has internal lists with elements of different types.
 The goal is to check how many internal lists contain exactly 3 elements.
-I used helper function that gets a list and counts the number of members in it.
+I used helper function that gets a list and counts the number of elements in it.
+To solve this question, I watched again Exercise 2 which explains the types of recursions.
+Total took me about 15 minutes to solve this question, watching the practice again helped
+me a lot. I barely faced any difficulties.|# 
 (: list-length : (Listof Any) -> Natural)
 (define(list-length lst)
-  (if(null? lst)
-   0
-   (+ 1 (list-length(rest lst)))))
+  (if(null? lst) ;; stop condition
+   0 
+   (+ 1 (list-length(rest lst))))) ;; else- The recursive step
    
 (: count-3lists : (Listof (Listof Any)) -> Natural)
 (define (count-3lists myList)
@@ -53,6 +62,7 @@ I used helper function that gets a list and counts the number of members in it.
      (if (= (list-length(first myList)) 3);; if the first list contain exactly 3 elements 
          (+ 1 (count-3lists (rest myList))) ;;count++
          (count-3lists (rest myList)))));;else-the first list doesn't contain exactly 3 elements
+
 (test (count-3lists '((9 3 5) (() (1 2 3)) ("tt" 4 #\E) (2 4 6 8) (1 2 3))) => 3)
 (test (count-3lists '((1 5 4) (() (1 2 3) (6)) ("tt" "mom" #\@) (2 4 6 8) (1 2 3))) => 4)
 (test (count-3lists '((2 "t" 4) (() () ()) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 4)
@@ -65,14 +75,18 @@ I used helper function that gets a list and counts the number of members in it.
 ;;(test (count-3lists '((() () ()) (("tt" "Three" 7)))) => 1)this test pass with res 1
 ;;(test (count-3lists '((() () ()) (("tt" "Three" 7)))) => 2)this test not pass with res 2
 ;;(test (count-3lists '((2 "t" 4) 7 8 9)) => 1) this test is not pass      
-|# 
+
 
 
 #| Question 2.b
+This function gets a list that has internal lists with elements of different types.
+The goal is to check how many internal lists contain exactly 3 elements.
 As in 2.a, i used the 'list-length-tail' helper function that counts the
 number of internal elements in a given list.
 The difference between the two sections is that now the function is a tail recursion
-that retains the final answer at each stage until we reach the stop conditions.|#
+that retains the final answer at each stage until we reach the stop conditions.
+As I said in 2.a, watching practice 2 again helped me a lot to solve the question,
+ it took me about 15 minutes to solve the question. I barely faced any difficulties. |#
 
 #|An helper function that counts the number of elements in a given list|#
 (: list-length-tail : (Listof Any) -> Natural)
@@ -80,6 +94,7 @@ that retains the final answer at each stage until we reach the stop conditions.|
   (if(null? lst) ;; stop condition
    0
    (+ 1 (list-length-tail(rest lst))))) ;;else- the list is not empty
+
 #|An helper function that saves the result in every stage|#
 (: helper-tail : (Listof (Listof Any)) Natural -> Natural)
 (define(helper-tail lst acc)
@@ -94,7 +109,7 @@ that retains the final answer at each stage until we reach the stop conditions.|
 (define (count-3lists-tail List_tail)
   (helper-tail List_tail 0)) ;;It's 0 caz I calculate sum and i want it start from 0
  
-#|
+
 (test (count-3lists-tail '((9 3 5) (() (1 2 3)) ("tt" 4 #\E) (2 4 6 8) (1 2 3))) => 3)
 (test (count-3lists-tail '((1 5 4) (() (1 2 3) (6)) ("tt" "mom" #\@) (2 4 6 8) (1 2 3))) => 4)
 (test (count-3lists-tail '((2 "t" 4) (() () ()) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 4)
@@ -106,7 +121,7 @@ that retains the final answer at each stage until we reach the stop conditions.|
 ;;(test (count-3lists-tail '((() () ()) (("tt" "Three" 7)))) => 1)this test pass with res 1
 ;;(test (count-3lists-tail '((() () ()) (("tt" "Three" 7)))) => 2)this test not pass with res 2
 ;;(test (count-3lists-tail '((2 "t" 4) 7 8 9)) => 1) this test is not pass  
-|#
+
 
 
 
@@ -134,7 +149,6 @@ that retains the final answer at each stage until we reach the stop conditions.|
  
 
 #|
-
 |# 
 (: count-3listsRec : (Listof (Listof Any)) -> Natural)
 (define (count-3listsRec myLST)
@@ -311,6 +325,3 @@ the stop conditions. |#
  (and (pred1 (first lst1))
  (pred2 (first lst2))
  (every2? pred1 pred2 (rest lst1) (rest lst2)))))
-
-
-
