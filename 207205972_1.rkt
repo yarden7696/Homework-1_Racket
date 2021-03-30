@@ -74,7 +74,7 @@ number of internal elements in a given list.
 The difference between the two sections is that now the function is a tail recursion
 that retains the final answer at each stage until we reach the stop conditions.|#
 
-#|An helper function that counts the number of elements in a given list
+#|An helper function that counts the number of elements in a given list|#
 (: list-length-tail : (Listof Any) -> Natural)
 (define(list-length-tail lst)
   (if(null? lst) ;; stop condition
@@ -94,7 +94,7 @@ that retains the final answer at each stage until we reach the stop conditions.|
 (define (count-3lists-tail List_tail)
   (helper-tail List_tail 0)) ;;It's 0 caz I calculate sum and i want it start from 0
  
-  
+#|
 (test (count-3lists-tail '((9 3 5) (() (1 2 3)) ("tt" 4 #\E) (2 4 6 8) (1 2 3))) => 3)
 (test (count-3lists-tail '((1 5 4) (() (1 2 3) (6)) ("tt" "mom" #\@) (2 4 6 8) (1 2 3))) => 4)
 (test (count-3lists-tail '((2 "t" 4) (() () ()) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 4)
@@ -110,36 +110,16 @@ that retains the final answer at each stage until we reach the stop conditions.|
 
 
 
-#| Question 2.c
-(: list-length-REC : (Listof Any) -> Natural)
-(define(list-length-REC lst)
-  (if(null? lst)
-   0
-   (+ 1 (list-length-REC(rest lst)))))
-   
-(define (list-of-lists? v)
-  (and (list? v) (andmap list? v)))
-(: count-3listsRec  : (Listof(Listof Any)) -> Natural)
-(define (count-3listsRec myLST)
-  (if(null? myLST) ;; stop condition
-     0
-     #|(if(and(list? (first myLST));; if the first list contain exactly 3 elements 
-            (= (list-length-REC (first myLST)) 3)) ;;and its one internal list
-         (+ 1 (count-3listsRec (rest myLST))) ;;count++
-         (count-3listsRec (rest myLST));; else |#
-         
-     (if(list-of-lists? (first myLST))
-            (and(count-3listsRec(first first myLST))
-            (count-3listsRec(first rest myLST))
-            (count-3listsRec(rest myLST)))
-            (if(= (list-length-REC (first myLST)) 3)
-               (+ 1 (count-3listsRec (rest myLST))) ;;count++
-               (count-3listsRec (rest myLST))))))
+#| Question 2.c |#
+
+        
+        
+            
      
            
      
 (test (count-3listsRec '((1 3 4) (() (1 2 3)) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 4)
-|#
+
 
 #|-------------------------------------Q3---------------------------------------------|#
 
@@ -219,9 +199,7 @@ and so on and so forth until it enters the 'is-even?' function for the last time
 true for the odd number we got.
 -If we got an even number,we called the is-even?(X-1) function, Which will call is-odd(x-1)
 and so on and so forth until it enters the 'is-odd?' function for the last time that it returns
-false for the even number we got.       
-|#
-
+false for the even number we got.|#
 (define (is-odd? x)
  (if (zero? x)
  false
@@ -239,8 +217,7 @@ and so on and so forth until it enters the 'is-odd?' function for the last time 
 false for the odd number we got.
 -If we got an even number,we called the is-odd?(X-1) function, Which will call is-even(x-1)
 and so on and so forth until it enters the 'is-even?' function for the last time that it returns
-true for the even number we got.       
-|#
+true for the even number we got.|#
 (define (is-even? x)
  (if (zero? x)
  true
@@ -256,19 +233,31 @@ true for the even number we got.
 
 
 (: every? : (All (A) (A -> Boolean) (Listof A) -> Boolean))
-;; See explanation about the All syntax at the end of the file…
-;; << Add your comments here>>
-;; << Add your comments here>>
+#|
+input:- A predicate function that receives a type A element and returns a Boolean answer.
+      - List of type A elements
+output: True- if all the elements in the list return T for the predicate, otherwise- false.
+This is generic function that performs the predicate on the first element and then 
+checks the rest of the elements recursively by calling the function 'every?' until we reach
+the stop conditions. |#
 (define (every? pred lst)
  (or (null? lst)
  (and (pred (first lst))
  (every? pred (rest lst)))))
+
 ;; An example for the usefulness of this polymorphic function
 (: all-even? : (Listof Natural) -> Boolean)
-;; << Add your comments here>>
-;; << Add your comments here>>
+#|
+input:  List of natural numbers
+output: True- if all the elements in the list return T for the predicate, otherwise- false.
+This function calls the function every? With the following inputs:
+-Predict- is-even?
+- The list we received as input.
+The function 'every?' Checks whether each element in the list is even by using the predicate,
+if all the elements are even we return true.|#
 (define (all-even? lst)
  (every? is-even? lst))
+
 ;; tests
 (test (all-even? null))
 (test (all-even? (list 0)))
@@ -276,22 +265,26 @@ true for the even number we got.
 (test (not (all-even? (list 1 3 5 7))))
 (test (not (all-even? (list 1))))
 (test (not (all-even? (list 2 4 1 6))))
+
+
 (: every2? : (All (A B) (A -> Boolean) (B -> Boolean) (Listof A) (Listof B) ->
 Boolean))
-;; << Add your comments here>>
-;; << Add your comments here>>
+#|
+input: - pred1 of type A -> Boolean
+       - pred2 of type B -> Boolean
+       - List1 of type A elements
+       - List2 of type B elements
+output: True- if all the elements in the list1 return T for the pred1 and if all the
+        elements in the list2 return T for the pred2 , otherwise- false.
+This function performs the pred1 on the first element in List1 and performs the pred2 on the
+first element in List2 and then checks the rest of list1 and List2 by recursively calling
+the function 'every2?' with pred1 pred2 and the rest of List1 and List2 until we reach
+the stop conditions. |#
 (define (every2? pred1 pred2 lst1 lst2)
  (or (null? lst1) ;; both lists assumed to be of same length
  (and (pred1 (first lst1))
  (pred2 (first lst2))
  (every2? pred1 pred2 (rest lst1) (rest lst2)))))
-
-
-
-
-
-
-
 
 
 
