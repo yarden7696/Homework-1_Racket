@@ -120,26 +120,32 @@ that retains the final answer at each stage until we reach the stop conditions.|
    (+ 1 (list-length-c(rest lst)))))
    
 
-(: help : Natural (Listof Any) -> Natural)
-(define (help counter ls)
-  (cond[(null? ls) counter] ;;stop condition
-       [(list? (car ls)) ;;if the first value is a list - check this value recursive
-        (if(= (list-length-c (car ls)) 3)
-            (help (+ 1 counter)(cdr ls));;we found a list that contain exacly 3 elements -> counter++
-            (help counter (cdr ls)))] 
-       [else (help counter (cdr ls))]))
+
+(: help-2c : (Listof Any) Natural -> Natural)
+(define (help-2c LST acc)
+  (if(null? LST)
+     acc ;;stop condition
+     (if(list? (first LST)) ;;if the first value is a list - check this value recursive
+        (if(= (list-length-c (first LST)) 3)
+           (help-2c (rest LST) (+ 1 acc));;we found a list that contain exacly 3 elements -> counter++
+           (help-2c (rest LST) acc)) 
+     (help-2c(rest LST) acc))))
+
+ 
+
 #|
 
-|#
+|# 
 (: count-3listsRec : (Listof (Listof Any)) -> Natural)
 (define (count-3listsRec myLST)
-  (match myLST
-    [(null) (0)]
-        [(= (list-length-c (first myLST)) 3) (+ (help 1 (first myLST)) (count-3listsRec (rest myLST)))] 
-        [else  (+ (help 0 (first myLST)) (count-3listsRec (rest myLST)))]))
+  (if (null? myLST)
+      0
+      (if(= (list-length-c (first myLST)) 3)
+         (+ (help-2c (first myLST) 1) (count-3listsRec (rest myLST))) 
+         (+ (help-2c (first myLST) 0) (count-3listsRec (rest myLST))))))
      
 (test (count-3listsRec '((1 3 4) (() (1 2 3) ()) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 5)
-
+ 
 
 #|-------------------------------------Q3---------------------------------------------|#
 
