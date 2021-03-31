@@ -126,7 +126,7 @@ As I said in 2.a, watching practice 2 again helped me a lot to solve the questio
 
 
 #| Question 2.c|#
-
+ 
 
 #|An helper function that counts the number of elements in a given list|#
 (: list-length-c : (Listof Any) -> Natural)
@@ -142,16 +142,21 @@ This function receives as input a list of elements of different types and natura
 source list. |#
 (: help-2c : (Listof Any) Natural -> Natural)
 (define (help-2c LST acc)
-  (if(null? LST)
+  (if(null? LST)   
      acc ;;stop condition
      (if(list? (first LST));; the first element is a list 
         (if(= (list-length-c (first LST)) 3) ;; it has exactly 3 elements so in the next line-count++
            (help-2c (rest LST) (+ 1 acc));; checking the rest of the list
-           (help-2c (rest LST) acc));; else-there is no exactly 3 elements 
-     (help-2c(rest LST) acc))))
+           (help-2c (rest LST) acc));; else-there is no exactly 3 elements
+        
+     (if (= (list-length-c LST) 3);; if the first list contain exactly 3 elements 
+       (help-2c(rest LST) (+ 1 acc));; count++
+       (help-2c (rest LST) acc)))));;else-the first list doesn't contain exactly 3 elements
+       
+     ;;(help-2c(rest LST) acc))))
 
  
-
+  
 #| Source function
 This function gets a list that has internal lists with elements of different types.
 The goal is to counts the number of lists of length 3.
@@ -161,16 +166,20 @@ friends. the difficulty was mainly the access to the element of the list of list
 (: count-3listsRec : (Listof (Listof Any)) -> Natural)
 (define (count-3listsRec myLST)
   (if (null? myLST) ;; stop condition
-      0
-      (if(= (list-length-c (first myLST)) 3) ;; the first element is a list with 3 elements init.  
-         (+ (help-2c (first myLST) 1) (count-3listsRec (rest myLST)));;help-2c counts the internal list with length 3  
-         (+ (help-2c (first myLST) 0) (count-3listsRec (rest myLST))))));; the first element is a list without 3 elements init. 
-     
-(test (count-3listsRec '((1 3 4) (() (1 2 3) ()) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 5)
+      0 
+      (+ (help-2c (first myLST) 0) (count-3listsRec (rest myLST)))));; the first element is a list without 3 elements init. 
+           
+(test (count-3listsRec '((1 3 4) (() (1 2 3)()) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 4)
 (test (count-3listsRec '((1 3 4) (() (1 2 3)) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 4) 
 (test (count-3listsRec '((1 3 4) (() (1 2 3) () (1 4 8)) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 5)
-(test (count-3listsRec '((1 3 4) ((5 6 8) (1 2 3) ( 2 4 6)) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 7)
-
+(test (count-3listsRec '(((5 6 8) (1 2 3) ( 2 4 6)))) => 3)
+(test (count-3listsRec '(((5 6 8) ( 2 4 6)) (1 1 1) ((5 6 8) ( 2 4 6)) )) => 5)
+(test (count-3listsRec '(((5 6 8) ( 2 4 6)) ((5 6 8) ( 2 4 6)) )) => 4)
+(test (count-3listsRec '( (5 6 8 9) (5 6 8) ( 2 4 6) ( 2 4 6))) => 3)
+(test (count-3listsRec '(((5 6 8) ( 2 4 6)) ((5 6 8 3) ( 2 4 6)) )) => 3)
+(test (count-3listsRec '(((5 6 8) ( 2 4 6)) (1 2 3 4) ((5 6 8) ( 2 4 6)) )) => 4) 
+(test (count-3listsRec '((1 2 3 4) )) => 0)
+(test (list-length-c '((1 2 3 4 ))) => 4)   
 #|-------------------------------------Q3---------------------------------------------|#
 
  
@@ -178,9 +187,10 @@ friends. the difficulty was mainly the access to the element of the list of list
 In both of these sections I created a new type called KeyStack.
 It has 2 constructors:
 EmptyKS- A constructor that represents an empty stack.
-Push- accepts 3 things as input (symbol, string and KeyStack)
-and returns an extended keystack in the natural
-|#
+Push- accepts 3 Parameters as input (symbol, string and KeyStack)
+and returns an extended keystack in the natural.
+For both of these sections it took me an average of 20 minutes.
+I barely faced any difficulties. |#
 (define-type KeyStack
   [EmptyKS] ;; 3.1
   [Push Symbol String KeyStack]) ;;3.2
@@ -193,7 +203,9 @@ If the key does not appear in the original stack, it should return a #f value.
 To do this I checked if the stack I received was of type EmptyKS or Push.
 If it is a Push type,I checked whether the keys are the same, if yes-
 i return the string linked to it, otherwise i will recursively call the search-stack
-function until we find the key.if the key wat not found - i will return #f. |#
+function until we find the key.if the key wat not found - i will return #f.
+This section took me an average of half an hour, what was difficult mostly its the declaration
+of the function that should be a union of (String False). |#
 (: search-stack  : (Symbol KeyStack -> (U String False)) )
 (define (search-stack smbl stck)
   (cases stck
@@ -217,8 +229,9 @@ its first value.
 If the original stack was empty, it should return a #f value.
 To do this I checked if the stack I received was of type EmptyKS or Push.
 If it is a Push type,I return the rest of the stack (without the first value).
-Otherwise - this means the stack is empty so we will return #F value. |#
-
+Otherwise - this means the stack is empty so we will return #F value.
+This section took me an average of 20 minutes, the previous section helped me
+understand better and resolve faster. |#
 (: pop-stack  : (KeyStack -> (U KeyStack False)))
 (define (pop-stack stck)
   (cases stck
@@ -249,7 +262,9 @@ and so on and so forth until it enters the 'is-even?' function for the last time
 true for the odd number we got.
 -If we got an even number,we called the is-even?(X-1) function, Which will call is-odd(x-1)
 and so on and so forth until it enters the 'is-odd?' function for the last time that it returns
-false for the even number we got.|#
+false for the even number we got.
+I understood this section very quickly and it took me an average of about 10 minutes.
+I barely faced any difficulties.|#
 (define (is-odd? x)
  (if (zero? x)
  false
@@ -267,7 +282,9 @@ and so on and so forth until it enters the 'is-odd?' function for the last time 
 false for the odd number we got.
 -If we got an even number,we called the is-odd?(X-1) function, Which will call is-even(x-1)
 and so on and so forth until it enters the 'is-even?' function for the last time that it returns
-true for the even number we got.|#
+true for the even number we got.
+I understood this section very quickly and it took me an average of about 10 minutes.
+I barely faced any difficulties. |#
 (define (is-even? x)
  (if (zero? x)
  true
@@ -289,7 +306,9 @@ input:- A predicate function that receives a type A element and returns a Boolea
 output: True- if all the elements in the list return T for the predicate, otherwise- false.
 This is generic function that performs the predicate on the first element and then 
 checks the rest of the elements recursively by calling the function 'every?' until we reach
-the stop conditions. |#
+the stop conditions.
+This section took me on average about 30 min, it was difficult for me understanding
+how 'All' works and its syntax. |#
 (define (every? pred lst)
  (or (null? lst)
  (and (pred (first lst))
@@ -304,7 +323,8 @@ This function calls the function every? With the following inputs:
 -Predict- is-even?
 - The list we received as input.
 The function 'every?' Checks whether each element in the list is even by using the predicate,
-if all the elements are even we return true.|#
+if all the elements are even we return true.
+This section took me an average of about 10 minutes, I barely faced any difficulties. |#
 (define (all-even? lst)
  (every? is-even? lst))
 
@@ -317,8 +337,7 @@ if all the elements are even we return true.|#
 (test (not (all-even? (list 2 4 1 6))))
 
 
-(: every2? : (All (A B) (A -> Boolean) (B -> Boolean) (Listof A) (Listof B) ->
-Boolean))
+(: every2? : (All (A B) (A -> Boolean) (B -> Boolean) (Listof A) (Listof B) -> Boolean))
 #|
 input: - pred1 of type A -> Boolean
        - pred2 of type B -> Boolean
@@ -329,7 +348,8 @@ output: True- if all the elements in the list1 return T for the pred1 and if all
 This function performs the pred1 on the first element in List1 and performs the pred2 on the
 first element in List2 and then checks the rest of list1 and List2 by recursively calling
 the function 'every2?' with pred1 pred2 and the rest of List1 and List2 until we reach
-the stop conditions. |#
+the stop conditions.
+This section took me an average of about 15 minutes, I barely faced any difficulties.|#
 (define (every2? pred1 pred2 lst1 lst2)
  (or (null? lst1) ;; both lists assumed to be of same length
  (and (pred1 (first lst1))
