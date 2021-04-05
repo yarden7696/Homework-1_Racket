@@ -71,10 +71,6 @@ me a lot. I barely faced any difficulties.|#
 (test (count-3lists '((1 2 4) ((3 5) () (6)))) => 2) 
 (test (count-3lists '((1 2 4) ((3 5) () 7))) => 2)
 (test (count-3lists '((() (1 2 3) (6)) ("tt" "mom" #\@) (2 4 6 8) (1 2 3))) => 3)
-;;this 2 test in the second list there is 2 ((...))check if its shoult return 1 or 2?
-;;(test (count-3lists '((() () ()) (("tt" "Three" 7)))) => 1)this test pass with res 1
-;;(test (count-3lists '((() () ()) (("tt" "Three" 7)))) => 2)this test not pass with res 2
-;;(test (count-3lists '((2 "t" 4) 7 8 9)) => 1) this test is not pass      
 
 
 
@@ -117,46 +113,36 @@ As I said in 2.a, watching practice 2 again helped me a lot to solve the questio
 (test (count-3lists-tail '((2 "t" 4) ((1) (7 8 9) (6 2)))) => 2)
 (test (count-3lists-tail '((1 2 4) ((3 5) () (6)))) => 2) 
 (test (count-3lists-tail '((1 2 4) ((3 5) () 7))) => 2)
-;;this 2 test in the second list there is 2 ((...))check if its shoult return 1 or 2?
-;;(test (count-3lists-tail '((() () ()) (("tt" "Three" 7)))) => 1)this test pass with res 1
-;;(test (count-3lists-tail '((() () ()) (("tt" "Three" 7)))) => 2)this test not pass with res 2
-;;(test (count-3lists-tail '((2 "t" 4) 7 8 9)) => 1) this test is not pass  
 
 
 
 
-#| Question 2.c|#
- 
+
+#| Question 2.c |#
 
 #|An helper function that counts the number of elements in a given list|#
 (: list-length-c : (Listof Any) -> Natural)
 (define(list-length-c lst)
-  (if(null? lst) ;;stop condition
+  (if(null? lst) ;; stop condition
    0
    (+ 1 (list-length-c(rest lst))))) ;; the recursive step
    
 
-#|
+#| 
 This function receives as input a list of elements of different types and natural number
 (accumulate) whose his role is to keep the number of inner lists in length 3 in the
 source list. |#
 (: help-2c : (Listof Any) Natural -> Natural)
 (define (help-2c LST acc)
-  (if(null? LST)   
+  (if(null? LST)
      acc ;;stop condition
-     (if(list? (first LST));; the first element is a list 
+      (if(list? (first LST));; the first element is a list 
         (if(= (list-length-c (first LST)) 3) ;; it has exactly 3 elements so in the next line-count++
            (help-2c (rest LST) (+ 1 acc));; checking the rest of the list
-           (help-2c (rest LST) acc));; else-there is no exactly 3 elements
-        
-     (if (= (list-length-c LST) 3);; if the first list contain exactly 3 elements 
-       (help-2c(rest LST) (+ 1 acc));; count++
-       (help-2c (rest LST) acc)))));;else-the first list doesn't contain exactly 3 elements
-       
-     ;;(help-2c(rest LST) acc))))
+           (help-2c (rest LST) acc));; else-there is no exactly 3 elements 
+     (help-2c(rest LST) acc))))
 
- 
-  
+
 #| Source function
 This function gets a list that has internal lists with elements of different types.
 The goal is to counts the number of lists of length 3.
@@ -165,21 +151,26 @@ This question was difficult for me, it took me an average of 3-4 hours and I was
 friends. the difficulty was mainly the access to the element of the list of list. |# 
 (: count-3listsRec : (Listof (Listof Any)) -> Natural)
 (define (count-3listsRec myLST)
-  (if (null? myLST) ;; stop condition
-      0 
-      (+ (help-2c (first myLST) 0) (count-3listsRec (rest myLST)))));; the first element is a list without 3 elements init. 
-           
-(test (count-3listsRec '((1 3 4) (() (1 2 3)()) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 4)
+  
+    (if (null? myLST) ;; stop condition
+        0
+        (if(= (list-length-c (first myLST)) 3) ;; the first element is a list with 3 elements init.  
+         (+ (help-2c (first myLST) 1) (count-3listsRec (rest myLST)));;help-2c counts the internal list with length 3  
+         (+ (help-2c (first myLST) 0) (count-3listsRec (rest myLST))))));; the first element is a list without 3 elements init.
+
+(test (count-3listsRec '((1 3 4) (() (1 2 3) ()) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 5)          
 (test (count-3listsRec '((1 3 4) (() (1 2 3)) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 4) 
 (test (count-3listsRec '((1 3 4) (() (1 2 3) () (1 4 8)) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 5)
-(test (count-3listsRec '(((5 6 8) (1 2 3) ( 2 4 6)))) => 3)
 (test (count-3listsRec '(((5 6 8) ( 2 4 6)) (1 1 1) ((5 6 8) ( 2 4 6)) )) => 5)
 (test (count-3listsRec '(((5 6 8) ( 2 4 6)) ((5 6 8) ( 2 4 6)) )) => 4)
 (test (count-3listsRec '( (5 6 8 9) (5 6 8) ( 2 4 6) ( 2 4 6))) => 3)
 (test (count-3listsRec '(((5 6 8) ( 2 4 6)) ((5 6 8 3) ( 2 4 6)) )) => 3)
 (test (count-3listsRec '(((5 6 8) ( 2 4 6)) (1 2 3 4) ((5 6 8) ( 2 4 6)) )) => 4) 
-(test (count-3listsRec '((1 2 3 4) )) => 0)
-(test (list-length-c '((1 2 3 4 ))) => 4)   
+(test (count-3listsRec '((1 2 3) )) => 1)
+(test (count-3listsRec '(((1 3 4) ("tt" "Three" 7) (1 2 3)) (2 4 6 8))) => 4)
+(test (count-3listsRec '((1 3 4) (() (1 2 3)) ("tt" "Three" 7) (2 4 6 8) (1 2 3))) => 4)
+
+ 
 #|-------------------------------------Q3---------------------------------------------|#
 
  
@@ -195,6 +186,10 @@ I barely faced any difficulties. |#
   [EmptyKS] ;; 3.1
   [Push Symbol String KeyStack]) ;;3.2
 
+(test (Push 's "TB" (Push 'a "A" (EmptyKS))) =>(Push 's "TB" (Push 'a "A" (EmptyKS))))
+(test (EmptyKS) => (EmptyKS))
+(test (Push 'p "AAA" (Push 'b "BB" (Push 'a "A" (EmptyKS))))=> (Push 'p "AAA" (Push 'b "BB" (Push 'a "A" (EmptyKS)))))
+ 
 
 #| Question 3.3
 This function accepts as input Symbol and a KeyStack and return the first
@@ -220,6 +215,8 @@ of the function that should be a union of (String False). |#
 (test (search-stack 'c (Push 'd "AAA" (Push 'b "B" (Push 'c "A" (EmptyKS))))) => "A")
 (test (search-stack 'e (Push 'e "100" (Push 'e "B" (Push 'e "A" (EmptyKS))))) => "100")
 (test (search-stack 'y (Push 'a "jin" (Push 'y "hector" (Push 'a "A" (EmptyKS))))) => "hector")
+
+
 
 
 
@@ -269,6 +266,7 @@ I barely faced any difficulties.|#
  (if (zero? x)
  false
  (is-even? (- x 1))))
+
 
 (: is-even? : Natural -> Boolean)
 #|
@@ -335,6 +333,10 @@ This section took me an average of about 10 minutes, I barely faced any difficul
 (test (not (all-even? (list 1 3 5 7))))
 (test (not (all-even? (list 1))))
 (test (not (all-even? (list 2 4 1 6))))
+;;my tests
+(test (every? is-odd? null))
+(test (every? is-odd? '(3 3 5)))
+(test (not (every? is-odd? '(5 7 8))))
 
 
 (: every2? : (All (A B) (A -> Boolean) (B -> Boolean) (Listof A) (Listof B) -> Boolean))
@@ -355,3 +357,8 @@ This section took me an average of about 15 minutes, I barely faced any difficul
  (and (pred1 (first lst1))
  (pred2 (first lst2))
  (every2? pred1 pred2 (rest lst1) (rest lst2)))))
+
+(test (every2? (lambda (x) #t) (lambda (x) #t) '("yarden" "cohen") '(1 2 3)))
+(test (not (every2?  (lambda (x) #t) (lambda (x) (not (eq? x 2))) '("ofir" "cohen") '(1 2))))
+(test (every2?  (lambda (x) #t) (lambda (x) (not (eq? x 3))) '("tamir" "cohen") '(1 2)))
+(test (not (every2? (lambda (x) #t) (lambda (x) #f) '("dor" "cohen") '(1 2))))
